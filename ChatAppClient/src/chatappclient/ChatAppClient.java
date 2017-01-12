@@ -7,6 +7,9 @@ package chatappclient;
 
 import chatappclient.packet.OPacket;
 import chatappclient.packet.PacketAuthorize;
+import chatappclient.packet.PacketManager;
+import chatappclient.packet.PacketMessage;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -21,6 +24,7 @@ import java.util.logging.Logger;
 public class ChatAppClient {
 
     private static Socket socket;
+    private static boolean sentNickname = false;
     
     public static void main(String[] args) {
         connect();
@@ -52,13 +56,46 @@ public class ChatAppClient {
         
     }
     
+    private static void handle(){
+        Thread handler = new Thread() {
+        
+            @Override
+            public  void run(){
+                while(true){
+                    try{
+                        DataInputStream dis = new DataInputStream(socket.getInputStream());
+                        if(dis.available() <= 0){
+                            try{
+                                Thread.sleep(10);
+                            }catch(InterruptedException ex){}
+                            continue;
+                        }
+                        short id = dis.readShort();
+                        OPacket packet = PacketManager.getPacket(id);
+                        packet.read(dis);
+                        packet.handle();
+                    }catch(IOException ex){
+                        ex.printStackTrace();
+                    }
+                }    
+            }
+        };
+        handler.start();
+        readChat();
+    }
+    
     private static void readChat(){
         Scanner scan = new Scanner(System.in);
         while(true){
             if(scan.hasNextLine()){
                 String line = scan.nextLine();
+                if(!sentNickname){
+                    sentNickname = true;
+                    sendPacket(new PacketAuthorize(line));
+                    continue;
+                }
                 System.out.println(line);
-                
+                sendPacket(new PacketMessage(null,line));
             }else
                 try{
                     Thread.sleep(10);
