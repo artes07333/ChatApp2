@@ -5,6 +5,8 @@
  */
 package chatappclient;
 
+import chatappclient.packet.OPacket;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -20,7 +22,19 @@ public class ChatAppClient {
     
     public static void main(String[] args) {
         connect();
+        handle();
         end();
+    }
+    
+    public static void sendPacket(OPacket packet){
+        try{
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+            dos.writeShort(packet.getID());
+            packet.write(dos);
+            dos.flush();
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
     }
     
     private static void connect(){

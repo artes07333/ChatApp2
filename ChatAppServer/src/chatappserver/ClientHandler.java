@@ -6,6 +6,7 @@
 package chatappserver;
 
 import java.io.DataInputStream;
+import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -24,18 +25,23 @@ public class ClientHandler extends Thread{
     @Override
     public void run(){
         while(true){
+            readData();
             try{
-             DataInputStream dis = new DataInputStream(client.getInputStream());   
-             if(dis.available() > 0){
-                 //чтение и обработка
-             }
-            } catch(Exception ex){
-                ex.printStackTrace();
-            }
-         try{
              Thread.sleep(10);
-         }catch(InterruptedException ex){
+            }catch(InterruptedException ex){
+            }
         }
     }
+    
+    private void readData(){
+        try {
+            DataInputStream dis =new DataInputStream(client.getInputStream());
+            if(dis.available() <= 0)
+                return;
+            short id = dis.readShort();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
+    
 }
