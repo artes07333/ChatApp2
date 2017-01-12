@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,8 +34,27 @@ public class ChatAppServer {
     private static void handle(){
         handler = new ServerHandler(server);
         handler.start();
+        readChat();
     }
     
+    private static void readChat(){
+        Scanner scan = new Scanner(System.in);
+        while(true){
+            if(scan.hasNextLine()){
+                String line = scan.nextLine();
+                System.out.println(line);
+                if(line.equals("/end")){
+                    end();
+                } else{
+                    System.out.println("Unknown command!");
+                }
+            }else
+                try{
+                    Thread.sleep(10);
+                }catch(InterruptedException ex){}
+        }
+    }
+            
     public static ServerHandler getServerHandler(){
         return handler;
     }

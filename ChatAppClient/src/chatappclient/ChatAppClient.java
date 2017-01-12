@@ -10,6 +10,7 @@ import chatappclient.packet.PacketAuthorize;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,7 +24,7 @@ public class ChatAppClient {
     
     public static void main(String[] args) {
         connect();
-        handle();
+        readChat();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
@@ -51,8 +52,18 @@ public class ChatAppClient {
         
     }
     
-    private static void handle(){
-        sendPacket(new PacketAuthorize("inC"));
+    private static void readChat(){
+        Scanner scan = new Scanner(System.in);
+        while(true){
+            if(scan.hasNextLine()){
+                String line = scan.nextLine();
+                System.out.println(line);
+                
+            }else
+                try{
+                    Thread.sleep(10);
+                }catch(InterruptedException ex){}
+        }
     }
     
     private static void end(){
