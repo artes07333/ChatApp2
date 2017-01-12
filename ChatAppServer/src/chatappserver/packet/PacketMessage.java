@@ -5,6 +5,8 @@
  */
 package chatappserver.packet;
 
+import chatappserver.ChatAppServer;
+import chatappserver.ClientHandler;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -44,7 +46,8 @@ public class PacketMessage extends OPacket{
 
     @Override
     public void handle() {
-        
+        sender = ChatAppServer.getHandler(getSocket()).getNickname();
+        ChatAppServer.handlers.keySet().forEach(s -> ChatAppServer.sendPacket(s, this));
     }
     
 }

@@ -46,12 +46,6 @@ public class PacketAuthorize extends OPacket{
     @Override
     public void handle(){
         ChatAppServer.getHandler(getSocket()).setNickname(nickname);
-        System.out.println("My nickname is "+ nickname);
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException ex) {
-        }
-        ChatAppServer.end();
     }
     
 }

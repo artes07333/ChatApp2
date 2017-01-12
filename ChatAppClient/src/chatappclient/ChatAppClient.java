@@ -29,10 +29,6 @@ public class ChatAppClient {
     public static void main(String[] args) {
         connect();
         readChat();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-        }
         end();
     }
     
@@ -89,6 +85,8 @@ public class ChatAppClient {
         while(true){
             if(scan.hasNextLine()){
                 String line = scan.nextLine();
+                if(line.equals("/end"))
+                    end();
                 if(!sentNickname){
                     sentNickname = true;
                     sendPacket(new PacketAuthorize(line));
@@ -109,6 +107,7 @@ public class ChatAppClient {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        System.exit(0);
     }
     
 }

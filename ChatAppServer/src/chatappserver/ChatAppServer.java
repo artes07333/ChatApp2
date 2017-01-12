@@ -5,6 +5,8 @@
  */
 package chatappserver;
 
+import chatappserver.packet.OPacket;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -23,7 +25,7 @@ public class ChatAppServer {
 
     private static ServerSocket server;
     private static ServerHandler handler;
-    static Map<Socket, ClientHandler> handlers = new HashMap<>();
+    public static Map<Socket, ClientHandler> handlers = new HashMap<>();
     
     public static void main(String[] args) {
         start();
@@ -35,6 +37,17 @@ public class ChatAppServer {
         handler = new ServerHandler(server);
         handler.start();
         readChat();
+    }
+    
+    public static void sendPacket(Socket receiver, OPacket packet){
+        try{
+            DataOutputStream dos = new DataOutputStream(receiver.getOutputStream());
+            dos.writeShort(packet.getID());
+            packet.write(dos);
+            dos.flush();
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
     }
     
     private static void readChat(){
@@ -73,6 +86,7 @@ public class ChatAppServer {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        System.exit(0);
     }
     
     public static ClientHandler getHandler(Socket socket){
