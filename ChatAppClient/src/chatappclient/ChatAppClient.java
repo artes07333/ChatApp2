@@ -6,6 +6,7 @@
 package chatappclient;
 
 import chatappclient.packet.OPacket;
+import chatappclient.packet.PacketAuthorize;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -23,6 +24,10 @@ public class ChatAppClient {
     public static void main(String[] args) {
         connect();
         handle();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+        }
         end();
     }
     
@@ -47,7 +52,7 @@ public class ChatAppClient {
     }
     
     private static void handle(){
-        
+        sendPacket(new PacketAuthorize("inC"));
     }
     
     private static void end(){

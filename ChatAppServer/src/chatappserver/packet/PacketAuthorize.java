@@ -5,6 +5,7 @@
  */
 package chatappserver.packet;
 
+import chatappserver.ChatAppServer;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -40,6 +41,17 @@ public class PacketAuthorize extends OPacket{
     @Override
     public void read(DataInputStream dis) throws IOException {
         nickname = dis.readUTF();
+    }
+    
+    @Override
+    public void handle(){
+        ChatAppServer.getHandler(getSocket()).setNickname(nickname);
+        System.out.println("My nickname is "+ nickname);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException ex) {
+        }
+        ChatAppServer.end();
     }
     
 }

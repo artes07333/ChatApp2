@@ -5,6 +5,8 @@
  */
 package chatappserver;
 
+import chatappserver.packet.OPacket;
+import chatappserver.packet.PacketManager;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -16,16 +18,25 @@ import java.net.Socket;
 public class ClientHandler extends Thread{
     
     private final Socket client;
+    private String nickname = "Anonymous";
     
     public ClientHandler(Socket client){
         this.client = client;
         start();
     }
     
+    public String getNickname(){
+        return nickname;
+    }
+    
+    public void setNickname(String nickname){
+        this.nickname = nickname;
+    }
+    
     @Override
     public void run(){
         while(true){
-            readData();
+            if(!readData())
             try{
              Thread.sleep(10);
             }catch(InterruptedException ex){
@@ -33,15 +44,24 @@ public class ClientHandler extends Thread{
         }
     }
     
-    private void readData(){
+    private boolean readData(){
         try {
             DataInputStream dis =new DataInputStream(client.getInputStream());
             if(dis.available() <= 0)
-                return;
+                return false;
             short id = dis.readShort();
+            OPacket packet = PacketManager.getPacket(id);
+            packet.setSocket(client);
+            packet.read(dis); 
+            packet.handle();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        return true;
+    }
+    
+    public void invalidate(){
+        ChatAppServer.invalidate(client);
     }
     
 }

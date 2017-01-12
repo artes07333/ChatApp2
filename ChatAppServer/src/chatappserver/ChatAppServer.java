@@ -8,6 +8,9 @@ package chatappserver;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +21,8 @@ import java.util.logging.Logger;
 public class ChatAppServer {
 
     private static ServerSocket server;
+    private static ServerHandler handler;
+    static Map<Socket, ClientHandler> handlers = new HashMap<>();
     
     public static void main(String[] args) {
         start();
@@ -26,21 +31,12 @@ public class ChatAppServer {
     }
     
     private static void handle(){
-        while(true){
-             //обработкаподключающихся клиентов
-            try {
-               Socket client= server.accept();
-               new ClientHandler(client);
-            } catch (IOException ex) {
-                Logger.getLogger(ChatAppServer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
-               
-                Thread.sleep(10);
-            } catch (InterruptedException ex) {
-               
-            }
-        }
+        handler = new ServerHandler(server);
+        handler.start();
+    }
+    
+    public static ServerHandler getServerHandler(){
+        return handler;
     }
     
     private static void start(){
@@ -51,11 +47,20 @@ public class ChatAppServer {
         }
     }
     
-    private static void end(){
+    public static void end(){
         try {
             server.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
+    
+    public static ClientHandler getHandler(Socket socket){
+        return handlers.get(socket);
+    }
+    
+    public static void invalidate(Socket socket){
+        handlers.remove(socket);
+    }
+            
 }

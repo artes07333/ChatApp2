@@ -23,13 +23,12 @@ public class PacketManager {
         packets.put((short) 1, PacketAuthorize.class);
     }
     
-    public static void read(short id, DataInputStream dis){
+    public static OPacket getPacket(short id){
         try {
-            OPacket packet = packets.get(id).newInstance();
-            packet.read(dis);
-        } catch (Exception ex) {
+            return packets.get(id).newInstance();
+        } catch (InstantiationException | IllegalAccessException ex) {
             ex.printStackTrace();
         }
-        
+        return null;
     }
 }

@@ -21,4 +21,7 @@ public abstract class OPacket {
     
     public abstract void read(DataInputStream dis) throws IOException;
     
+    public abstract void handle();
+    
+    
 }
