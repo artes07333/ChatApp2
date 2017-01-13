@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatapp2server.packet;
+package chatapp2client.packet;
 
-import chatapp2server.ServerLoader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -14,38 +13,37 @@ import java.io.IOException;
  *
  * @author inc07hp
  */
-public class PacketAuthorize extends OPacket{
+public class PacketMessage extends OPacket{
 
-    private String nickname;
+    private String sender, message;
 
-    public PacketAuthorize() {
+    public PacketMessage() {
     }
 
-    public PacketAuthorize(String nickname) {
-        this.nickname = nickname;
+    public PacketMessage(String sender, String message) {
+        this.sender = sender;
+        this.message = message;
     }
-    
-    
-    
+          
     @Override
     public short getId() {
-        return 1;
+        return 2;
     }
 
     @Override
     public void write(DataOutputStream dos) throws IOException {
-        
+        dos.writeUTF(message);
     }
 
     @Override
     public void read(DataInputStream dis) throws IOException {
-        nickname = dis.readUTF();
+        sender = dis.readUTF();
+        message = dis.readUTF();
     }
 
     @Override
     public void handle() {
-        ServerLoader.getHandler(getSocket()).setNickname(nickname);
-        System.out.println("Authorized new socket with nickname " + nickname);
+        System.out.println(String.format("[%s] %s", sender, message));
     }
     
 }
