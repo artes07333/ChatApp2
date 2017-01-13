@@ -45,9 +45,9 @@ public class PacketAuthorize extends OPacket{
     @Override
     public void handle() {
         ServerLoader.getHandler(getSocket()).setNickname(nickname);
-        System.out.println("My nick is" + nickname);
+        System.out.println("My nick is " + nickname);
         try {
-            Thread.sleep(2000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {}
         ServerLoader.end();
     }
